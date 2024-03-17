@@ -220,7 +220,7 @@ if uploaded_file is not None:
     if st.button("Detect People"):
         detect_people_video(uploaded_file.name)
         detect_video_file_path = "Detect_" + uploaded_file.name
-        st.video()
+        st.video(detect_video_file_path)
 
     # Display a header for predictions
     st.header("Predictions")
