@@ -6,7 +6,6 @@ import tensorflow.keras as keras
 import imutils
 from collections import deque
 import time
-from streamlit_webrtc import webrtc_streamer
 
 # Constants
 SEQUENCE_LENGTH = 16
