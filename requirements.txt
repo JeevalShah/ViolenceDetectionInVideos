@@ -7,5 +7,3 @@ tensorflow-estimator==2.7.0
 tensorflow-io-gcs-filesystem==0.31.0
 collection==0.1.6
 protobuf==3.20.0
-streamlit_webrtc
-uuid
