@@ -62,9 +62,6 @@ def detect_people_video(file_path):
             
             # Display the frame
             webrtc_streamer(key="example", video_frame_callback=resized_frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
         else:
             break
 
