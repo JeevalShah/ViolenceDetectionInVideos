@@ -7,7 +7,6 @@ import imutils
 from collections import deque
 import time
 from streamlit_webrtc import webrtc_streamer
-import uuid
 
 # Constants
 SEQUENCE_LENGTH = 16
@@ -29,7 +28,7 @@ def detect_people_video(file_path):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     # Generate a unique key for the webrtc_streamer widget
-    unique_key = str(uuid.uuid4())
+    unique_key = 0
 
     while cap.isOpened():
         # Capture each frame of the video
@@ -66,6 +65,7 @@ def detect_people_video(file_path):
             
             # Display the frame
             webrtc_streamer(key="example_" + unique_key, video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
+            unique_key += 1
         else:
             break
 
