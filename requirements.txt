@@ -1,0 +1,12 @@
+imutils==0.5.4
+keras==2.7.0
+opencv-python==4.9.0.80
+streamlit==1.23.1
+tenacity==8.2.3
+tensorboard==2.11.2
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+tensorflow==2.7.0
+tensorflow-estimator==2.7.0
+tensorflow-io-gcs-filesystem==0.31.0
+collections
