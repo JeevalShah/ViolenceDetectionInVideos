@@ -6,6 +6,7 @@ import tensorflow.keras as keras
 import imutils
 from collections import deque
 import time
+from streamlit_webrtc import webrtc_streamer
 
 # Constants
 SEQUENCE_LENGTH = 16
@@ -60,7 +61,7 @@ def detect_people_video(file_path):
             cv2.putText(resized_frame, 'Low Confidence: ' + str(low_confidence), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
             
             # Display the frame
-            cv2.imshow("Detection", resized_frame)
+            webrtc_streamer(key="example", video_frame_callback=resized_frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
