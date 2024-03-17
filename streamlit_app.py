@@ -69,7 +69,7 @@ def detect_people_video(file_path):
             #unique_key += 1
         else:
             break
-    st.success('Saved Detect Video File')
+    st.success(f'Saved Detect Video File As Detect_{file_path}')
     # Release the video capture object, release the output video, and close all windows
     cap.release()
     out.release()
@@ -218,7 +218,9 @@ if uploaded_file is not None:
     save(uploaded_file)
 
     if st.button("Detect People"):
-        webrtc_streamer(key="Detect", video_frame_callback=detect_people_video(uploaded_file.name))
+        detect_people_video(uploaded_file.name)
+        detect_video_file_path = "Detect_" + uploaded_file.name
+        st.video()
 
     # Display a header for predictions
     st.header("Predictions")
