@@ -27,8 +27,7 @@ def detect_people_video(file_path):
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # Generate a unique key for the webrtc_streamer widget
-    unique_key = 0
+    resized_frames = []
 
     while cap.isOpened():
         # Capture each frame of the video
@@ -62,16 +61,19 @@ def detect_people_video(file_path):
             cv2.putText(resized_frame, 'High Confidence: ' + str(high_confidence), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
             cv2.putText(resized_frame, 'Moderate Confidence: ' + str(moderate_confidence), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 122, 255), 2)
             cv2.putText(resized_frame, 'Low Confidence: ' + str(low_confidence), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+
+            resized_frames.append(resized_frame)
             
             # Display the frame
-            webrtc_streamer(key="example_" + str(unique_key), video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
-            unique_key += 1
+            #webrtc_streamer(key="example_" + str(unique_key), video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
+            #unique_key += 1
         else:
             break
 
     # Release the video capture object, release the output video, and close all windows
     cap.release()
     cv2.destroyAllWindows()
+    return resized_frames
 
 
 def predict_video(file_path):
@@ -217,7 +219,7 @@ if uploaded_file is not None:
     save(uploaded_file)
 
     if st.button("Detect People"):
-        detect_people_video(uploaded_file.name)
+        webrtc_streamer(key="Detect", video_frame_callback=detect_people_video(uploaded_file.name))
 
     # Display a header for predictions
     st.header("Predictions")
