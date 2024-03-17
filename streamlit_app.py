@@ -61,7 +61,7 @@ def detect_people_video(file_path):
             cv2.putText(resized_frame, 'Low Confidence: ' + str(low_confidence), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
             
             # Display the frame
-            webrtc_streamer(key="example", video_frame_callback=resized_frame)
+            webrtc_streamer(key="example", video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
         else:
             break
 
