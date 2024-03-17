@@ -27,7 +27,7 @@ def detect_people_video(file_path):
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    out = cv2.VideoWriter(f"Output_{file_path}", cv2.VideoWriter_fourcc(*'mp4v'), 30, (720, 1080))
+    out = cv2.VideoWriter(f"Detect_{file_path}", cv2.VideoWriter_fourcc(*'mp4v'), 30, (720, 1080))
 
     while cap.isOpened():
         # Capture each frame of the video
@@ -69,7 +69,7 @@ def detect_people_video(file_path):
             #unique_key += 1
         else:
             break
-
+    st.success('Saved Detect Video File')
     # Release the video capture object, release the output video, and close all windows
     cap.release()
     out.release()
