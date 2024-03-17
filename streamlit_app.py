@@ -27,7 +27,7 @@ def detect_people_video(file_path):
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    resized_frames = []
+    out = cv2.VideoWriter(f"Output_{file_path}", cv2.VideoWriter_fourcc(*'mp4v'), 30, (720, 1080))
 
     while cap.isOpened():
         # Capture each frame of the video
@@ -62,7 +62,7 @@ def detect_people_video(file_path):
             cv2.putText(resized_frame, 'Moderate Confidence: ' + str(moderate_confidence), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 122, 255), 2)
             cv2.putText(resized_frame, 'Low Confidence: ' + str(low_confidence), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
 
-            resized_frames.append(resized_frame)
+            out.write(resized_frame)
             
             # Display the frame
             #webrtc_streamer(key="example_" + str(unique_key), video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
@@ -72,7 +72,7 @@ def detect_people_video(file_path):
 
     # Release the video capture object, release the output video, and close all windows
     cap.release()
-    return resized_frames
+    out.release()
 
 
 def predict_video(file_path):
