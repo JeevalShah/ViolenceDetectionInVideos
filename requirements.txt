@@ -5,4 +5,4 @@ streamlit==1.23.1
 tensorflow==2.7.0
 tensorflow-estimator==2.7.0
 tensorflow-io-gcs-filesystem==0.31.0
-collections
+collection==0.1.6
