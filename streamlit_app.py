@@ -72,7 +72,6 @@ def detect_people_video(file_path):
 
     # Release the video capture object, release the output video, and close all windows
     cap.release()
-    cv2.destroyAllWindows()
     return resized_frames
 
 
