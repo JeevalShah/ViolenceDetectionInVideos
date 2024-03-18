@@ -71,7 +71,6 @@ def detect_people_video(video_file_path, output_file_path, SEQUENCE_LENGTH):
 
     video_reader.release()
     video_writer.release()
-    cv2.destroyAllWindows()
 
 def predict_video(input_file_path):
     video_reader = cv2.VideoCapture(input_file_path)
