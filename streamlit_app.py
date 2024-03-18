@@ -70,14 +70,9 @@ def detect_people_video(video_file_path, output_file_path, SEQUENCE_LENGTH):
 
         # Write The frame into the disk using the VideoWriter
         video_writer.write(frame)                       
-        
-        # Wait for a key event and handle window events
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
 
     video_reader.release()
     video_writer.release()
-    cv2.destroyAllWindows()
 
 def predict_video(input_file_path):
     video_reader = cv2.VideoCapture(input_file_path)
@@ -194,14 +189,9 @@ def predict_frames(video_file_path, output_file_path, SEQUENCE_LENGTH):
 
         # Write The frame into the disk using the VideoWriter
         video_writer.write(frame)                       
-        
-        # Wait for a key event and handle window events
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
 
     video_reader.release()
     video_writer.release()
-    cv2.destroyAllWindows()
 
 def save(uploaded_file):
     with open(uploaded_file.name, "wb") as f:
