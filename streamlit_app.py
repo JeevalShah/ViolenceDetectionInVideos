@@ -1,3 +1,5 @@
+#Save before making any changes!!
+
 import streamlit as st
 import cv2
 import numpy as np
@@ -65,12 +67,17 @@ def detect_people_video(video_file_path, output_file_path, SEQUENCE_LENGTH):
             cv2.putText(frame, 'High Confidence: ' + str(high_confidence), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
             cv2.putText(frame, 'Moderate Confidence: ' + str(moderate_confidence), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 122, 255), 2)
             cv2.putText(frame, 'Low Confidence: ' + str(low_confidence), (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-        
+
         # Write The frame into the disk using the VideoWriter
         video_writer.write(frame)                       
+        
+        # Wait for a key event and handle window events
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
 
     video_reader.release()
     video_writer.release()
+    cv2.destroyAllWindows()
 
 def predict_video(input_file_path):
     video_reader = cv2.VideoCapture(input_file_path)
@@ -184,12 +191,17 @@ def predict_frames(video_file_path, output_file_path, SEQUENCE_LENGTH):
             cv2.putText(frame, predicted_class_name, (5, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 8)
         else:
             cv2.putText(frame, predicted_class_name, (5, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 8)
-         
+
         # Write The frame into the disk using the VideoWriter
         video_writer.write(frame)                       
+        
+        # Wait for a key event and handle window events
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
     video_reader.release()
     video_writer.release()
+    cv2.destroyAllWindows()
 
 def save(uploaded_file):
     with open(uploaded_file.name, "wb") as f:
