@@ -190,7 +190,6 @@ def predict_frames(video_file_path, output_file_path, SEQUENCE_LENGTH):
 
     video_reader.release()
     video_writer.release()
-    cv2.destroyAllWindows()
 
 def save(uploaded_file):
     with open(uploaded_file.name, "wb") as f:
