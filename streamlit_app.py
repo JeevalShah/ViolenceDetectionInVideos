@@ -6,6 +6,8 @@ import tensorflow.keras as keras
 import imutils
 from collections import deque
 import time
+from IPython.display import HTML
+from base64 import b64encode
 
 # Constants
 SEQUENCE_LENGTH = 16
@@ -14,68 +16,69 @@ IMAGE_WIDTH = 64
 CLASSES_LIST = ["NonViolence", "Violence"]
 MoBiLSTM_model = load_model('ViolenceDetectionModel.h5')
 
-def detect_people_video(file_path):
+def detect_people_video(video_file_path, output_file_path, SEQUENCE_LENGTH):
+
     # Initialize the HOG person detector
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+    
+    # Read from the video file.
+    video_reader = cv2.VideoCapture(video_file_path)
+ 
+    # Get the width and height of the video.
+    original_video_width = int(video_reader.get(cv2.CAP_PROP_FRAME_WIDTH))
+    original_video_height = int(video_reader.get(cv2.CAP_PROP_FRAME_HEIGHT))
+ 
+    # VideoWriter to store the output video in the disk.
+    video_writer = cv2.VideoWriter(output_file_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 
+                                    int(video_reader.get(cv2.CAP_PROP_FPS)), (original_video_width, original_video_height))
+ 
+    # Iterate until the video is accessed successfully.
+    while video_reader.isOpened():
 
-    # Open the video file
-    cap = cv2.VideoCapture(file_path)
-
-    # Get the frame width and height
-    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    out = cv2.VideoWriter(f"Detect_{file_path}", cv2.VideoWriter_fourcc(*'mp4v'), 30, (720, 1080))
-
-    while cap.isOpened():
-        # Capture each frame of the video
-        ret, frame = cap.read()
-        if ret == True:
-            high_confidence, moderate_confidence, low_confidence = 0, 0, 0
-            
-            # Resize the frame for faster processing
-            resized_frame = imutils.resize(frame, width=min(1000, frame.shape[1]))
-            
-            # Convert the resized frame to grayscale
-            img_gray = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2GRAY)
-            
-            # Detect people in the resized grayscale frame
-            rects, weights = hog.detectMultiScale(img_gray, padding=(4, 4), scale=1.02)
-            
-            # Draw rectangles based on confidence levels
-            for i, (x, y, w, h) in enumerate(rects):
-                if weights[i] < 0.13:
-                    continue
-                elif weights[i] < 0.3 and weights[i] > 0.13:
-                    cv2.rectangle(resized_frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-                    low_confidence += 1
-                if weights[i] < 0.7 and weights[i] > 0.3:
-                    cv2.rectangle(resized_frame, (x, y), (x+w, y+h), (50, 122, 255), 2)
-                    moderate_confidence += 1
-                if weights[i] > 0.7:
-                    cv2.rectangle(resized_frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                    high_confidence += 1
-            
-            cv2.putText(resized_frame, 'High Confidence: ' + str(high_confidence), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
-            cv2.putText(resized_frame, 'Moderate Confidence: ' + str(moderate_confidence), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 122, 255), 2)
-            cv2.putText(resized_frame, 'Low Confidence: ' + str(low_confidence), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-
-            out.write(resized_frame)
-            
-            # Display the frame
-            #webrtc_streamer(key="example_" + str(unique_key), video_frame_callback=lambda frame: frame(image=resized_frame, format="bgr24"))
-            #unique_key += 1
-        else:
+        ok, frame = video_reader.read() 
+        if not ok:
             break
-    st.success(f'Saved Detect Video File As Detect_{file_path}')
-    # Release the video capture object, release the output video, and close all windows
-    cap.release()
-    out.release()
 
+        high_confidence, moderate_confidence, low_confidence = 0, 0, 0
 
-def predict_video(file_path):
-    video_reader = cv2.VideoCapture(file_path)
+        # Convert the frame to grayscale
+        img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
+        # Detect people in the resized grayscale frame
+        rects, weights = hog.detectMultiScale(img_gray, padding=(4, 4), scale=1.02)
+
+        # Draw rectangles based on confidence levels
+        for i, (x, y, w, h) in enumerate(rects):
+            if weights[i] < 0.13:
+                continue
+            elif weights[i] < 0.3 and weights[i] > 0.13:
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+                low_confidence += 1
+            if weights[i] < 0.7 and weights[i] > 0.3:
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 122, 255), 2)
+                moderate_confidence += 1
+            if weights[i] > 0.7:
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                high_confidence += 1
+            
+            cv2.putText(frame, 'High Confidence: ' + str(high_confidence), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
+            cv2.putText(frame, 'Moderate Confidence: ' + str(moderate_confidence), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 122, 255), 2)
+            cv2.putText(frame, 'Low Confidence: ' + str(low_confidence), (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+        
+        # Write The frame into the disk using the VideoWriter
+        video_writer.write(frame)                       
+        
+        # Wait for a key event and handle window events
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
+
+    video_reader.release()
+    video_writer.release()
+    cv2.destroyAllWindows()
+
+def predict_video(input_file_path):
+    video_reader = cv2.VideoCapture(input_file_path)
  
     # Get the width and height of the video.
     original_video_width = int(video_reader.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -186,8 +189,6 @@ def predict_frames(video_file_path, output_file_path, SEQUENCE_LENGTH):
             cv2.putText(frame, predicted_class_name, (5, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 8)
         else:
             cv2.putText(frame, predicted_class_name, (5, 100), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 0), 8)
-
-        cv2.imshow("Prediction", frame)
          
         # Write The frame into the disk using the VideoWriter
         video_writer.write(frame)                       
@@ -217,18 +218,41 @@ if uploaded_file is not None:
     save(uploaded_file)
 
     if st.button("Detect People"):
-        detect_people_video(uploaded_file.name)
         detect_video_file_path = "Detect_" + uploaded_file.name
-        st.video(detect_video_file_path)
+        detect_people_video(uploaded_file.name, detect_video_file_path, SEQUENCE_LENGTH)
+
+        predict_area = st.empty()
+        cap = cv2.VideoCapture(detect_video_file_path)
+
+        while cap.isOpened():
+            ret, frame_detect = cap.read()
+
+            if not ret:
+            # If the video has reached the end, reset to the beginning
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
+
+            frame_rgb_detect = cv2.cvtColor(frame_detect, cv2.COLOR_BGR2RGB)
+            predict_area.image(frame_rgb_detect, channels='RGB')
 
     # Display a header for predictions
     st.header("Predictions")
     predict_video(uploaded_file.name)
 
-    output_video_file_path = "Output_" + uploaded_file.name
     if st.button("Show Frame By Frame Prediction"):
-        predict_frames(uploaded_file.name, output_video_file_path, SEQUENCE_LENGTH)
+        predict_video_file_path = "Predict_" + uploaded_file.name
+        predict_frames(uploaded_file.name, predict_video_file_path, SEQUENCE_LENGTH)
 
+        predict_area = st.empty()
+        cap = cv2.VideoCapture(predict_video_file_path)
 
+        while cap.isOpened():
+            ret, frame_predict = cap.read()
 
+            if not ret:
+            # If the video has reached the end, reset to the beginning
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
 
+            frame_rgb_predict = cv2.cvtColor(frame_predict, cv2.COLOR_BGR2RGB)
+            predict_area.image(frame_rgb_predict, channels='RGB')
