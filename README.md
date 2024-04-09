@@ -27,4 +27,4 @@ This project is licensed under the MIT License.
 ## Acknowledgments
 - Kaggle Dataset used: [Real-Life Violence Situations Dataset](https://www.kaggle.com/datasets/mohamedmustafa/real-life-violence-situations-dataset)
 
-### ➡️ [Violence Detection Website](https://violencedetection.streamlit.app/)
+### ➡️ [Violence Detection Website](https://violencedetectioninvideo.streamlit.app/)
