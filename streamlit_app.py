@@ -1,13 +1,11 @@
 import streamlit as st
 import cv2
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import load_model
-import tensorflow.keras as keras
 import imutils
 from collections import deque
 import time
-from IPython.display import HTML
-from base64 import b64encode
 
 # Constants
 SEQUENCE_LENGTH = 16
